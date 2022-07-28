@@ -1,0 +1,118 @@
+﻿@{
+    ViewData["Title"] = "DEPT® Movie Trailer Browser";
+}
+
+<div class="text-center">
+    <div>
+        <h1 style="margin-top:5%;">Dept® Movie Trailer Browser</h1>
+        <p>Get all movie details with a single click</p>
+        <input type="text" id="inputSearch" placeholder="Search for a movie" style="background: transparent; border: bottom;" autofocus/>
+        <button type="button" class="btn btn-outline-secondary" id="searchBtn" style="border-width: 0;" onclick="MovieData()">
+            <img src="img/magnifying_glass.png" />
+        </button>
+    </div>
+    <button id="myBtn" class="btn btn-link" style=" margin-right: 39px; color:black;">request a movie trailer</button>
+
+    @*
+        Loader code from: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_css_loader5
+    *@
+    <div id="loader"></div>
+    
+    <div class="float-container" style="margin-top: 5%;">
+        <div class="float-child">
+            <div id="imdbData" style="margin-top:5%;" ></div>
+        </div>
+        <div class="float-child">
+            <div id="youTubeVideo" style="margin-top:5%; width: 100%;"></div>
+        </div>
+    </div>
+    @*
+        Used some parts of this simple how-to to create form to request a movie trailer
+        https://www.w3schools.com/howto/howto_css_modals.asp
+    *@
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <span class="close" style="text-align:right;">&times;</span>
+        <div class="container">
+          <form onsubmit="RequestTrailer()">
+            <input type="text" id="name" name="name" placeholder="Your name">
+            <br />
+            <input type="email" id="email" name="email" placeholder="Your email">
+            <br />
+            <input type="text" id="title" name="title" placeholder="Movie title">
+            <br />
+            <input type="submit" value="Submit">
+          </form>
+        </div>
+      </div>
+    </div>
+</div>
+
+<script>
+    
+    var input = document.getElementById("inputSearch");
+
+    input.addEventListener("keypress", function(e) {
+        if(e.keyCode == 13)
+        {
+            MovieData();
+        }
+    });
+
+    function MovieData() {
+        var inputText = document.getElementById("inputSearch").value;
+        //Basic validation
+        if(inputText == "" || inputText.length < 3) {
+            alert("Search text should contain at least three characters.");
+            return false;
+        }
+        showProgress();
+        $.post('Home/GetMovieData', {searchTerm: inputText}, 
+            function(returnedData){
+                hideProgress();
+                $('#imdbData').load("/Home/ImdbData", {searchTerm: inputText});
+                $('#youTubeVideo').load("/Home/YouTubeVideo", {searchTerm: inputText});
+                console.log(returnedData);
+            }).fail(function(){
+                hideProgress();
+                console.log("error");
+        });
+    }
+
+    var spinnerVisible = false;
+    function showProgress() {
+        if (!spinnerVisible) {
+            $("div#loader").fadeIn("fast");
+            spinnerVisible = true;
+        }
+    };
+    function hideProgress() {
+        if (spinnerVisible) {
+            var spinner = $("div#loader");
+            spinner.stop();
+            spinner.fadeOut("fast");
+            spinnerVisible = false;
+        }
+    };
+
+    var modal = document.getElementById("myModal");
+    var btn = document.getElementById("myBtn");
+    var span = document.getElementsByClassName("close")[0];
+    btn.onclick = function() {
+      modal.style.display = "block";
+    }
+    span.onclick = function() {
+      modal.style.display = "none";
+    }
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+      }
+    }
+
+    function RequestTrailer(){
+        alert("Thank you for your request. We will email you with a movie trailer soon!");
+        // We won't. :) Not until there's a function on controller to process this request, but I don't think it's really important here,
+        // this is just an example how this functionality could look.
+    }
+</script>

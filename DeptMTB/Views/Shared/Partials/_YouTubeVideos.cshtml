@@ -1,0 +1,44 @@
+﻿@model List<string>
+
+<div class="data" style="text-align: left;">
+    <h2><img src="img/youtube_logo.png" alt="YouTube" style="width: auto; height: 80px;"/> Movie Trailers</h2>
+    @foreach(var item in Model)
+    {       
+        <iframe width="600" height="450"
+            src="@item">
+        </iframe>
+        <div style="margin-bottom: 3%;">
+             @*Official Facebook and Twitter Documentations which I used fot this feature:
+                https://developers.facebook.com/docs/plugins/share-button/#
+                https://publish.twitter.com/#
+                
+                There is also an option in the embedded video to share it. :)
+                *@
+            <div id="fb-root"></div>
+            <div class="fb-share-button" 
+                data-href="@item" 
+                data-layout="button_count">
+            </div>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-url="@item" data-hashtags="DeptMTB" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+        </div>
+    }
+    <button id="moreVideosBtn" class="btn btn-link" onclick="ShowMoreVideos()">Show more videos</button>
+    @Html.Hidden("SearchTerm", (string)ViewBag.SearchTerm)
+    @Html.Hidden("VideosShown", Model.Count)
+</div>
+
+<script>
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+        fjs.parentNode.insertBefore(js, fjs);
+    } (document, 'script', 'facebook-jssdk'));
+    
+    function ShowMoreVideos(){
+        var inputText = document.getElementById("SearchTerm").value;
+        var videos = document.getElementById("VideosShown").value;
+        $('#youTubeVideo').load("/Home/YouTubeVideo", {searchTerm: inputText, videosShown: videos, showMore: true});
+    }
+</script>

@@ -1,0 +1,43 @@
+﻿@using DeptMTB.Models
+@{  
+   var movieData = ViewData.Model;   
+} 
+
+<div class="data" style="text-align: left;">
+    <h2><img src="img/imdb_logo.png" alt="IMDb" style="width: auto; height: 80px;"/> Movie Details</h2>
+    <div class="float-container">
+      <div class="float-child">
+        <img src="@movieData.Image" alt="Img" style="width: auto; height:450px; margin-right: 5px;"/>
+      </div>
+      <div class="float-child" style="height: 300px;">
+        <h3>@movieData.Title (@movieData.Year)</h3>
+        <p>
+            @movieData.Description
+        </p>
+        <br />
+        <h5>Ratings</h5>
+        <ul class="ratings">
+            @if(movieData.IMDbRating != "")
+            {
+                <li>IMDb: @movieData.IMDbRating</li>
+            }
+            @if(movieData.RottenTomatoesRating != "")
+            {
+                <li>RottenTomatoes: @movieData.RottenTomatoesRating</li>
+            }
+            @if(movieData.MetaCriticRating != "")
+            {
+                <li>MetaCritic: @movieData.MetaCriticRating</li>
+            }
+            @if(movieData.FilmAffinityRating != "")
+            {
+                <li>FilmAffinity: @movieData.FilmAffinityRating</li>
+            }
+            @if(movieData.TheMovieDbRating != "")
+            {
+                <li>TheMovieDb: @movieData.TheMovieDbRating</li>
+            }
+        </ul>
+      </div>
+    </div>
+</div>
